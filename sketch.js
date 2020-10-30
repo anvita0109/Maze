@@ -3,11 +3,15 @@ var maze, left_boundary, right_boundary, bottom_boundary, top_boundary;
 var wall1, wall2, wall3, wall4, wall5, wall6, wall7, wall8, wall9, wall10;
 var player;
 var trophy, trophyImg;
-var potionCount = 0;    
+var potionCount = 1;    
 var score = 0;
-var gameState = "PLAY";
-var num = 0;
+var gameState = 3;
 var obstacles_group, potion_group;
+
+// gamestate = 0
+// gamestate = 1, play
+//gamestate = 2, win
+//gamestate = 3 rules
 
 function preload(){
 
@@ -28,6 +32,10 @@ function preload(){
     potion4_img = loadImage("potion/potion4.jpg");
     potion5_img = loadImage("potion/potion5.jpg");
 
+    potionSound = loadSound("Sounds/potion_sound.mp3");
+    loseSound = loadSound("Sounds/end_sound.mp3");
+    winSound = loadSound("Sounds/win_sound.mp3");
+
     //player_potion_img = loadImage("player/player_potion.jpg");
 }
 
@@ -35,9 +43,12 @@ function setup(){
     var canvas = createCanvas(1270, displayHeight);
 
 
+
+
     right_boundary = createSprite(30, 150, 40, 6656 );
     left_boundary = createSprite(1300, 150, 40, 6656);
 
+    //form = new Form();
 
     trophy = createSprite(100, -1700, 50, 50);
     trophy.addImage(trophyImg);
@@ -233,14 +244,40 @@ function setup(){
     obstacles_group.add(obstacle8);
     obstacles_group.add(obstacle9);
 
-    potion_group.add(potion1, potion2, potion3, potion4, potion5, potion6) 
+    potion_group.add(potion1, potion2, potion3, potion4, potion5, potion6);
 
+    //milestones to increase score
+    if(player.y < 200){
+        score = score + 100;
+    }
 
+    if(player.y < -100){
+        score = score + 100;
+    }
+
+    if(player.y > 900){
+        score = score + 100;
+    }
+
+    if(player.y > 500){
+        score = score + 100;
+    }
+
+    //milestones to increase score end here
+
+    if(gameState === 2){
+        textSize(50);
+        text("You Win", player.x, player.y - 200);
+        winSound.play();
+    }
 }
 
 function draw(){
     background(0);
-
+    
+    if(gameState === 3){
+        displayRules();
+    }  
 
     obstacle1.bounceOff(right_boundary);
     obstacle1.bounceOff(left_boundary);
@@ -278,33 +315,126 @@ function draw(){
     player.collide(right_boundary);
     player.collide(left_boundary);
 
+    //multiple if command for player touching potion start here
     if(player.isTouching(potion00)){
         potionCount = potionCount+1;
         potion00.destroy();
-        score++
+        score = score + 50
+        potionSound.play();
+    }
+    if(player.isTouching(potion1)){
+        potionCount = potionCount+1;
+        potion1.destroy();
+        score = score + 50
+    }
+    if(player.isTouching(potion2)){
+        potionCount = potionCount+1;
+        potion2.destroy();
+        potionSound.play();
+        score = score + 50
+    }
+    if(player.isTouching(potion3)){
+        potionCount = potionCount+1;
+        potion3.destroy();
+        potionSound.play();
+        score = score + 50
+    }
+    if(player.isTouching(potion4)){
+        potionCount = potionCount+1;
+        potion4.destroy();
+        potionSound.play();
+        score = score + 50
+    }
+    if(player.isTouching(potion5)){
+        potionCount = potionCount+1;
+        potion5.destroy();
+        potionSound.play();
+        score = score + 50
+    }
+    if(player.isTouching(potion6)){
+        potionCount = potionCount+1;
+        potion6.destroy();
+        potionSound.play();
+        score = score + 50
+    }
+    //multiple if command for player touching potion end here
+
+
+    if(player.isTouching(trophy)){
+        gameState = 2;
     }
 
-    if(obstacles_group.isTouching(player) && potionCount === 0){
-        obstacles_group.setVelocityEach(0,0);
-        textSize(50);
-        fill(0);
-        stroke(255);
-        strokeWeight(5);
-        text("game over", 400, 500);
-        console.log("gameOver");
-        num = 1;
-        potionCount = potionCount-1
 
-//        if (obstacles_group.isTouching(player)&& potionCount !== 0){
 
- //       }
+
+
+
+
+    //Multiple if commands for destroying obstacles if they touch the player    
+    if (obstacle1.isTouching(player)&& potionCount > 1){
+        obstacle1.destroy();
+        potionCount = potionCount-1;
+        score = score - 10;
 
     }
+    if (obstacle2.isTouching(player)&& potionCount > 1){
+        obstacle2.destroy();
+        potionCount = potionCount-1;
 
+        score = score - 10;
+    }
+    if (obstacle3.isTouching(player)&& potionCount > 1){
+        obstacle3.destroy();
+        potionCount = potionCount-1;
+
+        score = score - 10;
+    }
+    if (obstacle4.isTouching(player)&& potionCount > 1){
+        obstacle4.destroy();
+        potionCount = potionCount-1;
+
+        score = score - 10;
+    }
+    if (obstacle5.isTouching(player)&& potionCount > 1){
+        obstacle5.destroy();
+        potionCount = potionCount-1;
+        score = score - 10;
+    }
+    if (obstacle6.isTouching(player)&& potionCount > 1){
+        obstacle6.destroy();
+        potionCount = potionCount-1;
+        score = score - 10;
+    }
+    if (obstacle7.isTouching(player)&& potionCount > 1){
+        obstacle7.destroy();
+        potionCount = potionCount-1;
+
+        score = score - 10;
+    }
+    if (obstacle8.isTouching(player)&& potionCount > 1){
+        obstacle8.destroy();
+        potionCount = potionCount-1;
+        score = score - 10;
+    }
+    if (obstacle9.isTouching(player)&& potionCount > 1){
+        obstacle9.destroy();
+        potionCount = potionCount-1;
+        score = score - 10;
+    }
+    
+    
+    //if commands for destroying obstacles if they touch the players ends here
+
+    if(obstacles_group.isTouching(player) && potionCount === 1){
+        loseSound.play();
+        obstacles_group.destroyEach();
+    }
 
     if (player.position >200){
         score = score + 20;
     }
+
+  
 
 
 
@@ -402,26 +532,28 @@ function draw(){
     camera.position.x = displayWidth/2;
     camera.position.y = player.y - 50;
 
-   // console.log(player.x);    
-    console.log(potionCount);
+    console.log(player.y);    
+   // console.log(potionCount);
 
 
-    if(num === 0){
+
+
+    if(gameState === 0){
     if(keyDown(LEFT_ARROW)){
-        changePosition(-15,0);
+        changePosition(-17,0);
         player.addImage(player_left);
         }
     else if(keyDown(RIGHT_ARROW)){
-            changePosition(15,0);
+            changePosition(17,0);
             player.addImage(player_right);
         }
     else if(keyDown(UP_ARROW)){
-            changePosition(0,-15);
+            changePosition(0,-17);
             player.addImage(player_img);
 
         }
     else if(keyDown(DOWN_ARROW)){
-            changePosition(0,+15);
+            changePosition(0,+17);
             player.addImage(player_down);
 
         }
@@ -433,13 +565,55 @@ function draw(){
     textSize(20);
     fill(255);
     stroke(255);
-    text("Score: "+score, 100, player.y - 400)
+    text("Score: "+score, 100, player.y - 370);
+
+    //form.display();
     
+    if(obstacles_group.isTouching(player) && potionCount <= 1){
+        obstacles_group.setVelocityEach(0,0);
+        textSize(50);
+        fill(0);
+        stroke(255);
+        strokeWeight(5);
+        text("game over", 400, player.y + 100);
+        console.log("gameOver");
+        gameState = 1;
     }
+    }
+
+
 
 
 
 function changePosition(x,y){
     player.x = player.x + x;
     player.y = player.y + y;
+}
+
+function keyPressed(){
+    if(keyCode === 32 && gameState === 3){
+        gameState = 0;
+
+    }
+}
+function displayRules(){
+
+/*    var rules = createElement('h2');
+
+    rules.color = "red";
+    rules.size(500, 300);
+    rules.html("a.Do not touch the monsters unless you have the potion.b.	Control the player using top/down/left/right arrow.  c.	Touching the red dots will end the game. d.	Score is dependent on how much time the player is playing.      e.Touching the winning block will win you that maze."+"     f.Press Space to Start");
+    rules.position(player.x, player.y - 20);
+
+    function hideRules(){
+        rules.hide();
+  }  */
+  textSize(15);
+  fill(255);
+  text("a.Do not touch the monsters unless you have the potion.", displayWidth/2, 620);
+  text("b.	Control the player using top/down/left/right arrow."  , displayWidth/2, 640);
+  text("c.	Touching the red dots will end the game.", displayWidth/2, 660);
+  text("d.	Score is dependent on how much time the player is playing.", displayWidth/2, 680);
+  text("e.Touching the winning block will win you that maze.", displayWidth/2, 700);
+  text("f.Press Space to Start", displayWidth/2, 720);
 }
